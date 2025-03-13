@@ -312,6 +312,12 @@ $rating_options = array('G', 'PG', 'PG-13', 'R', 'NC-17');
         </section>
     </div>
 </div>
+<!-- jQuery -->
+<script src="../plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../dist/js/adminlte.min.js"></script>
 <?php include '../_footer.php'; ?>
 </body>
 </html>
