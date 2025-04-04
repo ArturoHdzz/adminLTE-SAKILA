@@ -1,15 +1,12 @@
 <?php
 $api_url = "http://64.23.250.130/api/addresses/";
 
-
-function login(){
-
-}
-
-function getAddresses() {
+function getAddresses($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
+
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     curl_close($ch);
@@ -130,7 +127,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $address_edit = getAddress($_GET['edit']);
 }
 
-$addresses = getAddresses();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$addresses = getAddresses($page_url);
 ?>
 
 
@@ -252,40 +250,55 @@ $addresses = getAddresses();
                         <h3 class="card-title">Listado de Direcciones</h3>
                     </div>
                     <div class="card-body">
-                        <table id="addressesTable" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Dirección</th>
-                                    <th>Distrito</th>
-                                    <th>Teléfono</th>
-                                    <th>Última Actualización</th>
-                                    <th class="noGuest">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if ($addresses): ?>
-                                    <?php foreach ($addresses as $addr): ?>
-                                        <tr>
-                                            <td><?php echo $addr['address_id']; ?></td>
-                                            <td><?php echo $addr['address']; ?></td>
-                                            <td><?php echo $addr['district']; ?></td>
-                                            <td><?php echo $addr['phone']; ?></td>
-                                            <td><?php echo date('d/m/Y H:i:s', strtotime($addr['last_update'])); ?></td>
-                                            <td class="noGuest">
-                                                <a href="?edit=<?php echo $addr['address_id']; ?>" class="btn btn-sm btn-info">
-                                                    <i class="fas fa-edit"></i> Editar
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-danger" 
-                                                        onclick="confirmDelete(<?php echo $addr['address_id']; ?>)">
-                                                    <i class="fas fa-trash"></i> Eliminar
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                        <?php if(empty($addresses['results'])): ?>
+                            <div class="alert alert-info">
+                                No se encontraron direcciones o hubo un problema al conectar con la API.
+                            </div>
+                        <?php else: ?>
+                            <table id="addressesTable" class="table table-bordered table-striped">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $addresses['count'] ?></a></li>
+                                        <li class="page-item <?php echo $addresses['previous'] ? '' : 'disabled' ?>">
+                                            <a class="page-link" href="?page_url=<?php echo urlencode($addresses['previous']); ?>"><<</a>
+                                        </li>
+                                        <li class="page-item <?php echo $addresses['next'] ? '' : 'disabled' ?>">
+                                            <a class="page-link" href="?page_url=<?php echo urlencode($addresses['next']); ?>">>></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Dirección</th>
+                                        <th>Distrito</th>
+                                        <th>Teléfono</th>
+                                        <th>Última Actualización</th>
+                                        <th class="noGuest">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <?php foreach ($addresses['results'] as $addr): ?>
+                                            <tr>
+                                                <td><?php echo $addr['address_id']; ?></td>
+                                                <td><?php echo $addr['address']; ?></td>
+                                                <td><?php echo $addr['district']; ?></td>
+                                                <td><?php echo $addr['phone']; ?></td>
+                                                <td><?php echo date('d/m/Y H:i:s', strtotime($addr['last_update'])); ?></td>
+                                                <td class="noGuest">
+                                                    <a href="?edit=<?php echo $addr['address_id']; ?>" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-edit"></i> Editar
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                            onclick="confirmDelete(<?php echo $addr['address_id']; ?>)">
+                                                        <i class="fas fa-trash"></i> Eliminar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
                     </div>
                 </div>
 

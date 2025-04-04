@@ -1,10 +1,12 @@
 <?php
 $api_url = "http://64.23.250.130/api/films/";
 
-function getFilms() {
+function getFilms($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
+
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     curl_close($ch);
@@ -149,7 +151,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $film_edit = getFilm($_GET['edit']);
 }
 
-$films = getFilms();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$films = getFilms($page_url);
 
 $rating_options = array('G', 'PG', 'PG-13', 'R', 'NC-17');
 ?>
@@ -266,45 +269,58 @@ $rating_options = array('G', 'PG', 'PG-13', 'R', 'NC-17');
                         <h3 class="card-title">Lista de Películas</h3>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Título</th>
-                                        <th>Año</th>
-                                        <th>Duración</th>
-                                        <th>Calificación</th>
-                                        <th>Tarifa</th>
-                                        <th>Última Actualización</th>
-                                        <th class="noGuest">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if ($films): ?>
-                                        <?php foreach ($films as $film): ?>
-                                            <tr>
-                                                <td><?php echo htmlspecialchars($film['film_id']); ?></td>
-                                                <td><?php echo htmlspecialchars($film['title']); ?></td>
-                                                <td><?php echo htmlspecialchars($film['release_year']); ?></td>
-                                                <td><?php echo htmlspecialchars($film['length']); ?> min</td>
-                                                <td><?php echo htmlspecialchars($film['rating']); ?></td>
-                                                <td><?php echo htmlspecialchars($film['rental_rate']); ?></td>
-                                                <td><?php echo htmlspecialchars($film['last_update']); ?></td>
-                                                <td class="noGuest">
-                                                    <a href="?edit=<?php echo $film['film_id']; ?>" class="btn btn-info btn-sm">Editar</a>
-                                                    <form method="post" style="display:inline;">
-                                                        <input type="hidden" name="film_id" value="<?php echo $film['film_id']; ?>">
-                                                        <button type="submit" name="delete" class="btn btn-danger btn-sm">Eliminar</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <tr><td colspan="8">No se encontraron películas</td></tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
+                        <?php if(empty($films['results'])): ?>
+                            <div class="alert alert-info">
+                                No se encontraron peliculas o hubo un problema al conectar con la API.
+                            </div>
+                        <?php else: ?>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $films['count'] ?></a></li>
+                                            <li class="page-item <?php echo $films['previous'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($films['previous']); ?>"><<</a>
+                                            </li>
+                                            <li class="page-item <?php echo $films['next'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($films['next']); ?>">>></a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Título</th>
+                                            <th>Año</th>
+                                            <th>Duración</th>
+                                            <th>Calificación</th>
+                                            <th>Tarifa</th>
+                                            <th>Última Actualización</th>
+                                            <th class="noGuest">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                           <?php foreach ($films['results'] as $film): ?>
+                                                <tr>
+                                                    <td><?php echo htmlspecialchars($film['film_id']); ?></td>
+                                                    <td><?php echo htmlspecialchars($film['title']); ?></td>
+                                                    <td><?php echo htmlspecialchars($film['release_year']); ?></td>
+                                                    <td><?php echo htmlspecialchars($film['length']); ?> min</td>
+                                                    <td><?php echo htmlspecialchars($film['rating']); ?></td>
+                                                    <td><?php echo htmlspecialchars($film['rental_rate']); ?></td>
+                                                    <td><?php echo htmlspecialchars($film['last_update']); ?></td>
+                                                    <td class="noGuest">
+                                                        <a href="?edit=<?php echo $film['film_id']; ?>" class="btn btn-info btn-sm">Editar</a>
+                                                        <form method="post" style="display:inline;">
+                                                            <input type="hidden" name="film_id" value="<?php echo $film['film_id']; ?>">
+                                                            <button type="submit" name="delete" class="btn btn-danger btn-sm">Eliminar</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

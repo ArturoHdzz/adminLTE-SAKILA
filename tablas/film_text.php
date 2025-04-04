@@ -1,10 +1,11 @@
 <?php
 $api_url = "http://64.23.250.130/api/film-texts/";
 
-function getFilmTexts() {
+function getFilmTexts($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     
@@ -165,7 +166,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $filmtext_edit = getFilmText($_GET['edit']);
 }
 
-$filmtexts = getFilmTexts();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$filmtexts = getFilmTexts($page_url);
 ?>
 
 <!DOCTYPE html>
@@ -222,12 +224,23 @@ $filmtexts = getFilmTexts();
                         <h3 class="card-title">Lista de Textos de Películas</h3>
                     </div>
                     <div class="card-body">
-                        <?php if(empty($filmtexts)): ?>
+                        <?php if(empty($filmtexts['results'])): ?>
                             <div class="alert alert-info">
                                 No se encontraron textos de películas o hubo un problema al conectar con la API.
                             </div>
                         <?php else: ?>
                             <table class="table table-bordered table-striped">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $filmtexts['count'] ?></a></li>
+                                        <li class="page-item <?php echo $filmtexts['previous'] ? '' : 'disabled' ?>">
+                                            <a class="page-link" href="?page_url=<?php echo urlencode($filmtexts['previous']); ?>"><<</a>
+                                        </li>
+                                        <li class="page-item <?php echo $filmtexts['next'] ? '' : 'disabled' ?>">
+                                            <a class="page-link" href="?page_url=<?php echo urlencode($filmtexts['next']); ?>">>></a>
+                                        </li>
+                                    </ul>
+                                </nav>
                                 <thead>
                                     <tr>
                                         <th>ID Película</th>
@@ -237,7 +250,7 @@ $filmtexts = getFilmTexts();
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($filmtexts as $filmtext): ?>
+                                    <?php foreach ($filmtexts['results'] as $filmtext): ?>
                                         <tr>
                                             <td><?php echo $filmtext['film_id'] ?? ''; ?></td>
                                             <td><?php echo $filmtext['title'] ?? ''; ?></td>

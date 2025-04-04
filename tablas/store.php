@@ -1,10 +1,11 @@
 <?php
 $api_url = "http://64.23.250.130/api/stores/";
 
-function getStores() {
+function getStores($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     
@@ -183,7 +184,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $store_edit = getStore($_GET['edit']);
 }
 
-$stores = getStores();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$stores = getStores($page_url);
 ?>
 
 <!DOCTYPE html>
@@ -241,13 +243,24 @@ $stores = getStores();
                         <h3 class="card-title">Lista de Tiendas</h3>
                     </div>
                     <div class="card-body">
-                        <?php if(empty($stores)): ?>
+                        <?php if(empty($stores['results'])): ?>
                             <div class="alert alert-info">
                                 No se encontraron tiendas o hubo un problema al conectar con la API.
                             </div>
                         <?php else: ?>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $stores['count'] ?></a></li>
+                                            <li class="page-item <?php echo $stores['previous'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($stores['previous']); ?>"><<</a>
+                                            </li>
+                                            <li class="page-item <?php echo $stores['next'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($stores['next']); ?>">>></a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -258,7 +271,7 @@ $stores = getStores();
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($stores as $store): ?>
+                                        <?php foreach ($stores['results'] as $store): ?>
                                             <tr>
                                                 <td><?php echo $store['store_id'] ?? ''; ?></td>
                                                 <td><?php echo $store['manager_staff'] ?? ''; ?></td>
