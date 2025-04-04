@@ -1,12 +1,20 @@
 <?php
 $api_url = "http://64.23.250.130/api/film-texts/";
 
+function getAuthHeaders() {
+    $token = $_COOKIE['access_token'] ?? '';
+    return !empty($token) ? [
+        'Authorization: Bearer ' . $token,
+        'Content-Type: application/json'
+    ] : ['Content-Type: application/json'];
+}
 function getFilmTexts($url = null) {
     global $api_url;
     $url = $url ? $url : $api_url;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -31,6 +39,7 @@ function getFilmText($film_id) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $api_url . $film_id . "/");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -58,6 +67,7 @@ function createFilmText($film_id, $title, $description) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -85,6 +95,7 @@ function updateFilmText($film_id, $title, $description) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -103,6 +114,7 @@ function deleteFilmText($film_id) {
     curl_setopt($ch, CURLOPT_URL, $api_url . $film_id . "/");
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     

@@ -159,6 +159,7 @@
   function logout() {
       localStorage.removeItem('user_data');
       localStorage.removeItem('email');
+      document.cookie = "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
       window.location.href = "/code.php";
   }
 

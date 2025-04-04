@@ -122,6 +122,9 @@
       hideLoading('submitButton', 'submitSpinner');  // Ocultar el spinner
       if (data.user && data.access && data.refresh) {
         localStorage.setItem('user_data', JSON.stringify(data));
+
+        document.cookie = `access_token=${data.access}; path=/; SameSite=Lax`;
+
         window.location.href = 'dashboard.php';
       } else {
         alert('Error en la solicitud: ' + (data.error || 'No se pudo realizar la acción'));

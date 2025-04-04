@@ -1,12 +1,20 @@
 <?php
 $api_url = "http://64.23.250.130/api/rentals/";
 
+function getAuthHeaders() {
+    $token = $_COOKIE['access_token'] ?? '';
+    return !empty($token) ? [
+        'Authorization: Bearer ' . $token,
+        'Content-Type: application/json'
+    ] : ['Content-Type: application/json'];
+}
 function getRentals($url = null) {
     global $api_url;
     $url = $url ? $url : $api_url;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -33,6 +41,7 @@ function getRental($id) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $api_url . $id . "/");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -64,6 +73,7 @@ function createRental($rental_date, $return_date, $inventory, $customer, $staff)
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -95,6 +105,7 @@ function updateRental($id, $rental_date, $return_date, $inventory, $customer, $s
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -113,6 +124,7 @@ function deleteRental($id) {
     curl_setopt($ch, CURLOPT_URL, $api_url . $id . "/");
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     

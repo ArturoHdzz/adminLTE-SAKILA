@@ -1,12 +1,21 @@
 <?php
 $api_url = "http://64.23.250.130/api/stores/";
 
+function getAuthHeaders() {
+    $token = $_COOKIE['access_token'] ?? '';
+    return !empty($token) ? [
+        'Authorization: Bearer ' . $token,
+        'Content-Type: application/json'
+    ] : ['Content-Type: application/json'];
+}
 function getStores($url = null) {
     global $api_url;
     $url = $url ? $url : $api_url;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
+
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -32,6 +41,7 @@ function getStore($id) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $api_url . $id . "/");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     
     if(curl_errno($ch)) {
@@ -59,6 +69,7 @@ function createStore($manager_staff, $address) {
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     $response = curl_exec($ch);
     
@@ -87,6 +98,7 @@ function updateStore($id, $manager_staff, $address) {
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     $response = curl_exec($ch);
     
@@ -106,6 +118,7 @@ function deleteStore($id) {
     curl_setopt($ch, CURLOPT_URL, $api_url . $id . "/");
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     

@@ -1,6 +1,13 @@
 <?php
 $api_url = "http://64.23.250.130/api/categories/";
 
+function getAuthHeaders() {
+    $token = $_COOKIE['access_token'] ?? '';
+    return !empty($token) ? [
+        'Authorization: Bearer ' . $token,
+        'Content-Type: application/json'
+    ] : ['Content-Type: application/json'];
+}
 function getCategories($url = null) {
     global $api_url;
     $url = $url ? $url : $api_url;
@@ -8,6 +15,7 @@ function getCategories($url = null) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     curl_close($ch);
     return json_decode($response, true);
@@ -18,6 +26,7 @@ function getCategory($id) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $api_url . $id . "/");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     curl_close($ch);
     return json_decode($response, true);
@@ -37,6 +46,7 @@ function createCategory($name) {
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     $response = curl_exec($ch);
     curl_close($ch);
@@ -58,6 +68,7 @@ function updateCategory($id, $name) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     curl_close($ch);
     return json_decode($response, true);
@@ -69,6 +80,7 @@ function deleteCategory($id) {
     curl_setopt($ch, CURLOPT_URL, $api_url . $id . "/");
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, getAuthHeaders());
     $response = curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
