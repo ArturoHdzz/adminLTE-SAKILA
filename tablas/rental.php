@@ -1,10 +1,11 @@
 <?php
 $api_url = "http://64.23.250.130/api/rentals/";
 
-function getRentals() {
+function getRentals($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     
@@ -196,7 +197,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $rental_edit = getRental($_GET['edit']);
 }
 
-$rentals = getRentals();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$rentals = getRentals($page_url);
 
 ?>
 
@@ -275,13 +277,24 @@ $rentals = getRentals();
                         <h3 class="card-title">Lista de Alquileres</h3>
                     </div>
                     <div class="card-body">
-                        <?php if(empty($rentals)): ?>
+                        <?php if(empty($rentals['results'])): ?>
                             <div class="alert alert-info">
                                 No se encontraron alquileres o hubo un problema al conectar con la API.
                             </div>
                         <?php else: ?>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $rentals['count'] ?></a></li>
+                                            <li class="page-item <?php echo $rentals['previous'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($rentals['previous']); ?>"><<</a>
+                                            </li>
+                                            <li class="page-item <?php echo $rentals['next'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($rentals['next']); ?>">>></a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -295,7 +308,7 @@ $rentals = getRentals();
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($rentals as $rental): ?>
+                                        <?php foreach ($rentals['results'] as $rental): ?>
                                             <tr>
                                                 <td><?php echo $rental['rental_id'] ?? ''; ?></td>
                                                 <td><?php echo isset($rental['rental_date']) ? date('d/m/Y H:i:s', strtotime($rental['rental_date'])) : ''; ?></td>

@@ -1,10 +1,12 @@
 <?php
 $api_url = "http://64.23.250.130/api/countries/";
 
-function getCountries() {
+function getCountries($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
+
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     curl_close($ch);
@@ -113,7 +115,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $country_edit = getCountry($_GET['edit']);
 }
 
-$countries = getCountries();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$countries = getCountries($page_url);
 ?>
 
 <!DOCTYPE html>
@@ -142,25 +145,52 @@ $countries = getCountries();
                     <input type="text" name="country" class="form-control" required value="<?php echo $country_edit['country'] ?? ''; ?>">
                     <button type="submit" name="save" class="btn btn-primary mb-3 mt-3">Guardar</button>
                 </form>
-                <table class="table table-bordered table-striped">
-                    <thead><tr><th>ID</th><th>País</th><th>Última Actualización</th><th>Acciones</th></tr></thead>
-                    <tbody>
-                        <?php foreach ($countries as $country): ?>
-                            <tr>
-                                <td><?php echo $country['country_id']; ?></td>
-                                <td><?php echo $country['country']; ?></td>
-                                <td><?php echo date('d/m/Y H:i:s', strtotime($country['last_update'])); ?></td>
-                                <td>
-                                    <a href="?edit=<?php echo $country['country_id']; ?>" class="btn btn-info btn-sm">Editar</a>
-                                    <form method="post" style="display:inline;">
-                                        <input type="hidden" name="country_id" value="<?php echo $country['country_id']; ?>">
-                                        <button type="submit" name="delete" class="btn btn-danger btn-sm">Eliminar</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+
+                <div class="card-body">
+                    <?php if(empty($countries['results'])): ?>
+                        <div class="alert alert-info">
+                            No se encontraron paises o hubo un problema al conectar con la API.
+                        </div>
+                    <?php else: ?>
+                        <table class="table table-bordered table-striped">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $countries['count'] ?></a></li>
+                                    <li class="page-item <?php echo $countries['previous'] ? '' : 'disabled' ?>">
+                                        <a class="page-link" href="?page_url=<?php echo urlencode($countries['previous']); ?>"><<</a>
+                                    </li>
+                                    <li class="page-item <?php echo $countries['next'] ? '' : 'disabled' ?>">
+                                        <a class="page-link" href="?page_url=<?php echo urlencode($countries['next']); ?>">>></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>País</th>
+                                    <th>Última Actualización</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($countries['results'] as $country): ?>
+                                    <tr>
+                                        <td><?php echo $country['country_id']; ?></td>
+                                        <td><?php echo $country['country']; ?></td>
+                                        <td><?php echo date('d/m/Y H:i:s', strtotime($country['last_update'])); ?></td>
+                                        <td>
+                                            <a href="?edit=<?php echo $country['country_id']; ?>" class="btn btn-info btn-sm">Editar</a>
+                                            <form method="post" style="display:inline;">
+                                                <input type="hidden" name="country_id" value="<?php echo $country['country_id']; ?>">
+                                                <button type="submit" name="delete" class="btn btn-danger btn-sm">Eliminar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                </div>
             </div>
         </section>
     </div>

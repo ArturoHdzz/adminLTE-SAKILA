@@ -1,10 +1,11 @@
 <?php
 $api_url = "http://64.23.250.130/api/actors/";
-
-function getActors() {
+function getActors($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
+
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     curl_close($ch);
@@ -113,7 +114,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $actor_edit = getActor($_GET['edit']);
 }
 
-$actors = getActors();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$actors = getActors($page_url);
 ?>
 
 <!DOCTYPE html>
@@ -213,38 +215,53 @@ $actors = getActors();
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <table id="actorsTable" class="table table-bordered table-striped">
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Última Actualización</th>
-                                <th>Acciones</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php if ($actors): ?>
-                                <?php foreach ($actors as $actor): ?>
-                                    <tr>
-                                        <td><?php echo $actor['actor_id']; ?></td>
-                                        <td><?php echo $actor['first_name']; ?></td>
-                                        <td><?php echo $actor['last_name']; ?></td>
-                                        <td><?php echo date('d/m/Y H:i:s', strtotime($actor['last_update'])); ?></td>
-                                        <td>
-                                            <a href="?edit=<?php echo $actor['actor_id']; ?>" class="btn btn-sm btn-info">
-                                                <i class="fas fa-edit"></i> Editar
-                                            </a>
-                                            <button type="button" class="btn btn-sm btn-danger" 
-                                                    onclick="confirmDelete(<?php echo $actor['actor_id']; ?>)">
-                                                <i class="fas fa-trash"></i> Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                            </tbody>
-                        </table>
+                        <?php if(empty($actors['results'])): ?>
+                            <div class="alert alert-info">
+                                No se encontraron actores o hubo un problema al conectar con la API.
+                            </div>
+                        <?php else: ?>
+                            <table id="actorsTable" class="table table-bordered table-striped">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $actors['count'] ?></a></li>
+                                        <li class="page-item <?php echo $actors['previous'] ? '' : 'disabled' ?>">
+                                            <a class="page-link" href="?page_url=<?php echo urlencode($actors['previous']); ?>"><<</a>
+                                        </li>
+                                        <li class="page-item <?php echo $actors['next'] ? '' : 'disabled' ?>">
+                                            <a class="page-link" href="?page_url=<?php echo urlencode($actors['next']); ?>">>></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Última Actualización</th>
+                                    <th>Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($actors['results'] as $actor): ?>
+                                        <tr>
+                                            <td><?php echo $actor['actor_id']; ?></td>
+                                            <td><?php echo $actor['first_name']; ?></td>
+                                            <td><?php echo $actor['last_name']; ?></td>
+                                            <td><?php echo date('d/m/Y H:i:s', strtotime($actor['last_update'])); ?></td>
+                                            <td>
+                                                <a href="?edit=<?php echo $actor['actor_id']; ?>" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-edit"></i> Editar
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-danger"
+                                                        onclick="confirmDelete(<?php echo $actor['actor_id']; ?>)">
+                                                    <i class="fas fa-trash"></i> Eliminar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
                     </div>
                     <!-- /.card-body -->
                 </div>

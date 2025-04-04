@@ -1,10 +1,11 @@
 <?php
 $api_url = "http://64.23.250.130/api/payments/";
 
-function getPayments() {
+function getPayments($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     
@@ -188,7 +189,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $payment_edit = getPayment($_GET['edit']);
 }
 
-$payments = getPayments();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$payments = getPayments($page_url);
 ?>
 
 <!DOCTYPE html>
@@ -266,13 +268,24 @@ $payments = getPayments();
                         <h3 class="card-title">Lista de Pagos</h3>
                     </div>
                     <div class="card-body">
-                        <?php if(empty($payments)): ?>
+                        <?php if(empty($payments['results'])): ?>
                             <div class="alert alert-info">
                                 No se encontraron pagos o hubo un problema al conectar con la API.
                             </div>
                         <?php else: ?>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $payments['count'] ?></a></li>
+                                            <li class="page-item <?php echo $payments['previous'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($payments['previous']); ?>"><<</a>
+                                            </li>
+                                            <li class="page-item <?php echo $payments['next'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($payments['next']); ?>">>></a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -286,7 +299,7 @@ $payments = getPayments();
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($payments as $payment): ?>
+                                        <?php foreach ($payments['results'] as $payment): ?>
                                             <tr>
                                                 <td><?php echo $payment['payment_id'] ?? ''; ?></td>
                                                 <td><?php echo $payment['amount'] ?? ''; ?></td>

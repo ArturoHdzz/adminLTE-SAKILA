@@ -1,10 +1,11 @@
 <?php
 $api_url = "http://64.23.250.130/api/staffs/";
 
-function getStaffs() {
+function getStaffs($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     
@@ -213,7 +214,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $staff_edit = getStaff($_GET['edit']);
 }
 
-$staffs = getStaffs();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$staffs = getStaffs($page_url);
 ?>
 
 <!DOCTYPE html>
@@ -312,13 +314,24 @@ $staffs = getStaffs();
                         <h3 class="card-title">Lista de Personal</h3>
                     </div>
                     <div class="card-body">
-                        <?php if(empty($staffs)): ?>
+                        <?php if(empty($staffs['results'])): ?>
                             <div class="alert alert-info">
                                 No se encontraron miembros del personal o hubo un problema al conectar con la API.
                             </div>
                         <?php else: ?>
                             <div class="table-responsive">
                                 <table class="table table-bordered table-striped">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $staffs['count'] ?></a></li>
+                                            <li class="page-item <?php echo $staffs['previous'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($staffs['previous']); ?>"><<</a>
+                                            </li>
+                                            <li class="page-item <?php echo $staffs['next'] ? '' : 'disabled' ?>">
+                                                <a class="page-link" href="?page_url=<?php echo urlencode($staffs['next']); ?>">>></a>
+                                            </li>
+                                        </ul>
+                                    </nav>
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -333,7 +346,7 @@ $staffs = getStaffs();
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($staffs as $staff): ?>
+                                        <?php foreach ($staffs['results'] as $staff): ?>
                                             <tr>
                                                 <td><?php echo $staff['staff_id'] ?? ''; ?></td>
                                                 <td><?php echo ($staff['first_name'] ?? '') . ' ' . ($staff['last_name'] ?? ''); ?></td>

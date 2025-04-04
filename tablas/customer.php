@@ -1,10 +1,12 @@
 <?php
 $api_url = "http://64.23.250.130/api/customers/";
 
-function getCustomers() {
+function getCustomers($url = null) {
     global $api_url;
+    $url = $url ? $url : $api_url;
+
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $response = curl_exec($ch);
     curl_close($ch);
@@ -130,7 +132,8 @@ if (isset($_GET['edit']) && !empty($_GET['edit'])) {
     $customer_edit = getCustomer($_GET['edit']);
 }
 
-$customers = getCustomers();
+$page_url = isset($_GET['page_url']) ? urldecode($_GET['page_url']) : null;
+$customers = getCustomers($page_url);
 ?>
 
 <!DOCTYPE html>
@@ -189,50 +192,61 @@ $customers = getCustomers();
                         <h3 class="card-title">Lista de Clientes</h3>
                     </div>
                     <div class="card-body">
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Email</th>
-                                    <th>Activo</th>
-                                    <th>Creación</th>
-                                    <th>Última Actualización</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if ($customers): ?>
-                                    <?php foreach ($customers as $customer): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($customer['customer_id']); ?></td>
-                                            <td><?php echo htmlspecialchars($customer['first_name']); ?></td>
-                                            <td><?php echo htmlspecialchars($customer['last_name']); ?></td>
-                                            <td><?php echo htmlspecialchars($customer['email']); ?></td>
-                                            <td><?php echo $customer['active'] ? 'Sí' : 'No'; ?></td>
-                                            <td><?php echo htmlspecialchars($customer['create_date']); ?></td>
-                                            <td><?php echo htmlspecialchars($customer['last_update']); ?></td>
-                                            <td>
-                                                <a href="?edit=<?php echo $customer['customer_id']; ?>" class="btn btn-info btn-sm">
-                                                    <i class="fas fa-edit"></i> Editar
-                                                </a>
-                                                <form method="post" style="display:inline;">
-                                                    <input type="hidden" name="customer_id" value="<?php echo $customer['customer_id']; ?>">
-                                                    <button type="submit" name="delete" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">
-                                                        <i class="fas fa-trash"></i> Eliminar
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
+                        <?php if(empty($customers['results'])): ?>
+                            <div class="alert alert-info">
+                                No se encontraron clientes o hubo un problema al conectar con la API.
+                            </div>
+                        <?php else: ?>
+                            <table class="table table-bordered table-striped">
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <li class="page-item disabled"><a class="page-link">Cantidad: <?php echo $customers['count'] ?></a></li>
+                                        <li class="page-item <?php echo $customers['previous'] ? '' : 'disabled' ?>">
+                                            <a class="page-link" href="?page_url=<?php echo urlencode($customers['previous']); ?>"><<</a>
+                                        </li>
+                                        <li class="page-item <?php echo $customers['next'] ? '' : 'disabled' ?>">
+                                            <a class="page-link" href="?page_url=<?php echo urlencode($customers['next']); ?>">>></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <thead>
                                     <tr>
-                                        <td colspan="8" class="text-center">No hay clientes registrados</td>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Email</th>
+                                        <th>Activo</th>
+                                        <th>Creación</th>
+                                        <th>Última Actualización</th>
+                                        <th>Acciones</th>
                                     </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($customers['results'] as $customer): ?>
+                                            <tr>
+                                                <td><?php echo htmlspecialchars($customer['customer_id']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['first_name']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['last_name']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['email']); ?></td>
+                                                <td><?php echo $customer['active'] ? 'Sí' : 'No'; ?></td>
+                                                <td><?php echo htmlspecialchars($customer['create_date']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['last_update']); ?></td>
+                                                <td>
+                                                    <a href="?edit=<?php echo $customer['customer_id']; ?>" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-edit"></i> Editar
+                                                    </a>
+                                                    <form method="post" style="display:inline;">
+                                                        <input type="hidden" name="customer_id" value="<?php echo $customer['customer_id']; ?>">
+                                                        <button type="submit" name="delete" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este cliente?');">
+                                                            <i class="fas fa-trash"></i> Eliminar
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
