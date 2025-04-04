@@ -187,10 +187,10 @@ $filmactors = getFilmActors($page_url);
             <h1>Gestión de Relaciones Actor-Película</h1>
         </section>
         <section class="content">
-            <div class="container-fluid">
+            <div class="container-fluid ">
                 <?php echo $message; ?>
                 <div class="card card-primary">
-                    <div class="card-body">
+                    <div class="card-body noGuest">
                         <form method="post" action="">
                             <?php if(isset($filmactor_edit) && $filmactor_edit): ?>
                                 <input type="hidden" name="id" value="<?php echo $filmactor_edit['id'] ?? ''; ?>">
@@ -239,7 +239,7 @@ $filmactors = getFilmActors($page_url);
                                         <th>Actor ID</th>
                                         <th>Película ID</th>
                                         <th>Última Actualización</th>
-                                        <th>Acciones</th>
+                                        <th class="noGuest">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -249,7 +249,7 @@ $filmactors = getFilmActors($page_url);
                                             <td><?php echo $filmactor['actor'] ?? ''; ?></td>
                                             <td><?php echo $filmactor['film'] ?? ''; ?></td>
                                             <td><?php echo isset($filmactor['last_update']) ? date('d/m/Y H:i:s', strtotime($filmactor['last_update'])) : ''; ?></td>
-                                            <td>
+                                            <td class="noGuest">
                                                 <a href="?edit=<?php echo $filmactor['id'] ?? ''; ?>" class="btn btn-info btn-sm">
                                                     <i class="fas fa-edit"></i> Editar
                                                 </a>

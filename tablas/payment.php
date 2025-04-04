@@ -213,7 +213,7 @@ $payments = getPayments($page_url);
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-body">
                         <form method="post" action="">
                             <?php if(isset($payment_edit) && $payment_edit): ?>
@@ -295,7 +295,7 @@ $payments = getPayments($page_url);
                                             <th>Cliente ID</th>
                                             <th>Personal ID</th>
                                             <th>Alquiler ID</th>
-                                            <th>Acciones</th>
+                                            <th class="noGuest">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -308,7 +308,7 @@ $payments = getPayments($page_url);
                                                 <td><?php echo $payment['customer'] ?? ''; ?></td>
                                                 <td><?php echo $payment['staff'] ?? ''; ?></td>
                                                 <td><?php echo $payment['rental'] ?? ''; ?></td>
-                                                <td>
+                                                <td class="noGuest">
                                                     <a href="?edit=<?php echo $payment['payment_id'] ?? ''; ?>" class="btn btn-info btn-sm">
                                                         <i class="fas fa-edit"></i> Editar
                                                     </a>

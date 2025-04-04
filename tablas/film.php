@@ -183,7 +183,7 @@ $rating_options = array('G', 'PG', 'PG-13', 'R', 'NC-17');
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-body">
                         <form method="post" action="">
                             <input type="hidden" name="film_id" value="<?php echo $film_edit['film_id'] ?? ''; ?>">
@@ -296,7 +296,7 @@ $rating_options = array('G', 'PG', 'PG-13', 'R', 'NC-17');
                                             <th>Calificación</th>
                                             <th>Tarifa</th>
                                             <th>Última Actualización</th>
-                                            <th>Acciones</th>
+                                            <th class="noGuest">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -309,7 +309,7 @@ $rating_options = array('G', 'PG', 'PG-13', 'R', 'NC-17');
                                                     <td><?php echo htmlspecialchars($film['rating']); ?></td>
                                                     <td><?php echo htmlspecialchars($film['rental_rate']); ?></td>
                                                     <td><?php echo htmlspecialchars($film['last_update']); ?></td>
-                                                    <td>
+                                                    <td class="noGuest">
                                                         <a href="?edit=<?php echo $film['film_id']; ?>" class="btn btn-info btn-sm">Editar</a>
                                                         <form method="post" style="display:inline;">
                                                             <input type="hidden" name="film_id" value="<?php echo $film['film_id']; ?>">

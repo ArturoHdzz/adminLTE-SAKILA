@@ -151,12 +151,12 @@ $customers = getCustomers($page_url);
     <?php include '../_sidebar.php'; ?>
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>Gestión de Clientes</h1>
+            <h1 >Gestión de Clientes</h1>
         </section>
         <section class="content">
             <div class="container-fluid">
             <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-body">
                         <form method="post" action="">
                             <input type="hidden" name="customer_id" value="<?php echo $customer_edit['customer_id'] ?? ''; ?>">
@@ -218,7 +218,7 @@ $customers = getCustomers($page_url);
                                         <th>Activo</th>
                                         <th>Creación</th>
                                         <th>Última Actualización</th>
-                                        <th>Acciones</th>
+                                        <th class="noGuest">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -231,7 +231,7 @@ $customers = getCustomers($page_url);
                                                 <td><?php echo $customer['active'] ? 'Sí' : 'No'; ?></td>
                                                 <td><?php echo htmlspecialchars($customer['create_date']); ?></td>
                                                 <td><?php echo htmlspecialchars($customer['last_update']); ?></td>
-                                                <td>
+                                                <td class="noGuest">
                                                     <a href="?edit=<?php echo $customer['customer_id']; ?>" class="btn btn-info btn-sm">
                                                         <i class="fas fa-edit"></i> Editar
                                                     </a>

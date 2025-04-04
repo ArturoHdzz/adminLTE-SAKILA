@@ -1,0 +1,13 @@
+<html>
+<script>
+  function checkLocalStorageAndRedirect() {
+      const userData = localStorage.getItem('user_data');
+      if (userData) {
+          window.location.href = "/dashboard.php";
+      } else {
+          window.location.href = "/code.php"
+      }
+  }
+  document.addEventListener("DOMContentLoaded", checkLocalStorageAndRedirect);
+</script>
+</html>

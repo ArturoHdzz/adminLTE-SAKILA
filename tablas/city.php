@@ -137,12 +137,12 @@ $cities = getCities($page_url);
     <?php include '../_sidebar.php'; ?>
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>Gestión de Ciudades</h1>
+            <h1 >Gestión de Ciudades</h1>
         </section>
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <form method="post" action="">
+                <form method="post"  action="" class="noGuest">
                     <input type="hidden" name="city_id" value="<?php echo $city_edit['city_id'] ?? ''; ?>">
                     <label>Ciudad:</label>
                     <input type="text" name="city" class="form-control" required value="<?php echo $city_edit['city'] ?? ''; ?>">
@@ -150,7 +150,6 @@ $cities = getCities($page_url);
                     <input type="number" name="country" class="form-control" required value="<?php echo $city_edit['country'] ?? ''; ?>">
                     <button type="submit" name="save" class="btn btn-primary mb-3 mt-3">Guardar</button>
                 </form>
-
                 <div class="card-body">
                     <?php if(empty($cities['results'])): ?>
                         <div class="alert alert-info">
@@ -175,7 +174,7 @@ $cities = getCities($page_url);
                                     <th>Ciudad</th>
                                     <th>País ID</th>
                                     <th>Última Actualización</th>
-                                    <th>Acciones</th>
+                                    <th class="noGuest">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -185,7 +184,7 @@ $cities = getCities($page_url);
                                         <td><?php echo $city['city']; ?></td>
                                         <td><?php echo $city['country']; ?></td>
                                         <td><?php echo date('d/m/Y H:i:s', strtotime($city['last_update'])); ?></td>
-                                        <td>
+                                        <td class="noGuest">
                                             <a href="?edit=<?php echo $city['city_id']; ?>" class="btn btn-info btn-sm">Editar</a>
                                             <form method="post" style="display:inline;">
                                                 <input type="hidden" name="city_id" value="<?php echo $city['city_id']; ?>">

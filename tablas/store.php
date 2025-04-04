@@ -208,7 +208,7 @@ $stores = getStores($page_url);
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-body">
                         <form method="post" action="">
                             <?php if(isset($store_edit) && $store_edit): ?>
@@ -267,7 +267,7 @@ $stores = getStores($page_url);
                                             <th>ID Gerente</th>
                                             <th>ID Dirección</th>
                                             <th>Última Actualización</th>
-                                            <th>Acciones</th>
+                                            <th class="noGuest">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -277,7 +277,7 @@ $stores = getStores($page_url);
                                                 <td><?php echo $store['manager_staff'] ?? ''; ?></td>
                                                 <td><?php echo $store['address'] ?? ''; ?></td>
                                                 <td><?php echo isset($store['last_update']) ? date('d/m/Y H:i:s', strtotime($store['last_update'])) : ''; ?></td>
-                                                <td>
+                                                <td class="noGuest">
                                                     <a href="?edit=<?php echo $store['store_id'] ?? ''; ?>" class="btn btn-info btn-sm">
                                                         <i class="fas fa-edit"></i> Editar
                                                     </a>
