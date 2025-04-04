@@ -7,6 +7,13 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <style>
+    .spinner-border {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-width: 0.2em;
+    }
+  </style>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -44,12 +51,18 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+            <button type="submit" class="btn btn-primary btn-block" id="submitButton">
+              Entrar
+              <span id="submitSpinner" class="spinner-border text-light" style="display:none;"></span>
+            </button>
           </div>
         </div>
         <!-- Nuevo botón para otra API -->
         <div class="col-4 mt-2">
-          <button type="button" id="resendButton" class="btn btn-success btn-block">reenviar codigo</button>
+          <button type="button" id="resendButton" class="btn btn-success btn-block">
+            Reenviar código
+            <span id="resendSpinner" class="spinner-border text-light" style="display:none;"></span>
+          </button>
         </div>
       </form>
     </div>
@@ -69,6 +82,18 @@
     window.location.href = 'code.php';
   }
 
+  // Función para mostrar el spinner y deshabilitar el botón
+  function showLoading(buttonId, spinnerId) {
+    document.getElementById(buttonId).disabled = true;
+    document.getElementById(spinnerId).style.display = 'inline-block';
+  }
+
+  // Función para ocultar el spinner y habilitar el botón
+  function hideLoading(buttonId, spinnerId) {
+    document.getElementById(buttonId).disabled = false;
+    document.getElementById(spinnerId).style.display = 'none';
+  }
+
   document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -77,6 +102,8 @@
       otp: document.querySelector('input[name="otp"]').value,
       password: document.querySelector('input[name="password"]').value
     };
+
+    showLoading('submitButton', 'submitSpinner');  // Mostrar el spinner
 
     fetch('http://64.23.250.130/api/verify-otp/', {
       method: 'POST',
@@ -92,6 +119,7 @@
       return response.json();
     })
     .then(data => {
+      hideLoading('submitButton', 'submitSpinner');  // Ocultar el spinner
       if (data.user && data.access && data.refresh) {
         localStorage.setItem('user_data', JSON.stringify(data));
         window.location.href = 'dashboard.php';
@@ -100,38 +128,43 @@
       }
     })
     .catch(error => {
+      hideLoading('submitButton', 'submitSpinner');  // Ocultar el spinner
       alert('Hubo un error en la solicitud: ' + error.message);
     });
   });
 
-document.getElementById('resendButton').addEventListener('click', function(event) {
-  event.preventDefault();
+  document.getElementById('resendButton').addEventListener('click', function(event) {
+    event.preventDefault();
 
-  const additionalData = {
-    email: document.querySelector('input[name="email"]').value,
-  };
+    const additionalData = {
+      email: document.querySelector('input[name="email"]').value,
+    };
 
-  fetch('http://64.23.250.130/api/login/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(additionalData)
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data.message);
+    showLoading('resendButton', 'resendSpinner');  // Mostrar el spinner
 
-    if (data.message === 'OTP enviado') {
-      alert('Se ha enviado un nuevo código de verificación a tu correo electrónico.');
-    } else {
-      alert('Error en la solicitud: ' + (data.error || 'No se pudo realizar la acción'));
-    }
-  })
-  .catch(error => {
-    alert('Hubo un error en la solicitud: ' + error.message);
+    fetch('http://64.23.250.130/api/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(additionalData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      hideLoading('resendButton', 'resendSpinner');  // Ocultar el spinner
+      console.log(data.message);
+
+      if (data.message === 'OTP enviado') {
+        alert('Se ha enviado un nuevo código de verificación a tu correo electrónico.');
+      } else {
+        alert('Error en la solicitud: ' + (data.error || 'No se pudo realizar la acción'));
+      }
+    })
+    .catch(error => {
+      hideLoading('resendButton', 'resendSpinner');  // Ocultar el spinner
+      alert('Hubo un error en la solicitud: ' + error.message);
+    });
   });
-});
 </script>
 
 </body>

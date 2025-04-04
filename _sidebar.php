@@ -40,6 +40,11 @@
             </a>
           </li>
       
+          <li class="nav-item noGuest noClient">
+            <a href="../register.php" class="nav-link active">
+              <p>Registrar usuario</p>
+            </a>
+          </li>
           <li class="nav-item" id="actor">
             <a href="../tablas/actor.php" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
@@ -136,13 +141,26 @@
               <p>Store</p>
             </a>
           </li>
+
+          <li class="nav-item ">
+            <a class="nav-link active" onclick="logout()">
+              <p>Cerrar sesion</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
   </aside>
+
 <script>
+
+  function logout() {
+      localStorage.removeItem('user_data');
+      localStorage.removeItem('email');
+      window.location.href = "/code.php";
+  }
 
   function useComponent(roles) {
       const userData = JSON.parse(localStorage.getItem('user_data'));
@@ -170,4 +188,14 @@
     }
   });
 
+</script>
+
+<script>
+function checkLocalStorageAndRedirect() {
+    const userData = localStorage.getItem('user_data')  
+    if (!userData) {
+        window.location.href = "/code.php"
+    }
+}
+checkLocalStorageAndRedirect();
 </script>
