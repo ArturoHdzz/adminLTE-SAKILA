@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sakila DB | Verificación de Código</title>
+  <!-- Preload critical assets -->
+  <link rel="preload" href="dist/css/adminlte.min.css" as="style">
+  <link rel="preload" href="plugins/fontawesome-free/css/all.min.css" as="style">
+  <link rel="preload" href="plugins/jquery/jquery.min.js" as="script">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="#"><b>Sakila</b>DB</a>
+  </div>
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">Introduce el código de verificación que te hemos enviado</p>
+
+      <form id="verificationForm">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Código de verificación" name="verification_code" required>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-key"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block">Verificar</button>
+          </div>
+        </div>
+      </form>
+
+      <p class="mt-3 text-center">
+        ¿No has recibido el código? <a href="resend-code.html">Reenviar código</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="plugins/jquery/jquery.min.js" defer></script>
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js" defer></script>
+<script src="dist/js/adminlte.min.js" defer></script>
+
+<script>
+  // Asignar el evento de submit al formulario de verificación
+  document.getElementById('verificationForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Evitar el envío tradicional del formulario
+
+    // Obtener el código de verificación
+    const verificationCode = document.querySelector('input[name="verification_code"]').value;
+
+    // Crear el objeto con los datos del código de verificación
+    const verificationData = {
+      verification_code: verificationCode
+    };
+
+    // Realizar la petición a la API de verificación usando fetch
+    fetch('https://tu-api.com/verify-code', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(verificationData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Redirigir a la página de éxito si la verificación es exitosa
+        window.location.href = 'success.html';
+      } else {
+        // Mostrar un mensaje de error si el código es incorrecto
+        alert('Error: ' + data.message);
+      }
+    })
+    .catch(error => {
+      alert('Hubo un error en la solicitud: ' + error);
+    });
+  });
+</script>
+
+</body>
+</html>

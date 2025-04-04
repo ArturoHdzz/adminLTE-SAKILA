@@ -1,6 +1,11 @@
 <?php
 $api_url = "http://64.23.250.130/api/addresses/";
 
+
+function login(){
+
+}
+
 function getAddresses() {
     global $api_url;
     $ch = curl_init();

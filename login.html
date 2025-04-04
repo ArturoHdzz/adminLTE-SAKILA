@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sakila DB | Login</title>
+  <!-- Preload critical assets -->
+  <link rel="preload" href="dist/css/adminlte.min.css" as="style">
+  <link rel="preload" href="plugins/fontawesome-free/css/all.min.css" as="style">
+  <link rel="preload" href="plugins/jquery/jquery.min.js" as="script">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="#"><b>Sakila</b>DB</a>
+  </div>
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">Inicia sesión para comenzar tu sesión</p>
+
+      <form id="loginForm">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Usuario" name="username" required>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" class="form-control" placeholder="Contraseña" name="password" required>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8">
+            <div class="icheck-primary">
+              <input type="checkbox" id="remember">
+              <label for="remember">
+                Recuérdame
+              </label>
+            </div>
+          </div>
+          <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+          </div>
+        </div>
+      </form>
+      <p class="mb-1 mt-3 text-center">
+        ¿No tienes una cuenta? <a href="register.html">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script src="plugins/jquery/jquery.min.js" defer></script>
+<script src="plugins/bootstrap/js/bootstrap.bundle.min.js" defer></script>
+<script src="dist/js/adminlte.min.js" defer></script>
+
+<script>
+  // Asignar el evento de submit al formulario de login
+  document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Evitar el envío tradicional del formulario
+
+    // Obtener los valores del formulario
+    const username = document.querySelector('input[name="username"]').value;
+    const password = document.querySelector('input[name="password"]').value;
+
+    // Crear el objeto con los datos del login
+    const loginData = {
+      username: username,
+      password: password
+    };
+
+    // Realizar la petición a la API de login usando fetch
+    fetch('http://64.23.250.130/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(loginData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Redirigir a la página de dashboard si el login es exitoso
+        window.location.href = 'dashboard.html';
+      } else {
+        // Mostrar un mensaje de error si el login falla
+        alert('Error de login: ' + data.message);
+      }
+    })
+    .catch(error => {
+      alert('Hubo un error en la solicitud: ' + error);
+    });
+  });
+
+
+
+/* // El objeto que deseas almacenar en LocalStorage
+const userData = {
+  "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc0NDA4MTI3MiwiaWF0IjoxNzQzNzM1NjcyLCJqdGkiOiJkNGMwYjlmNTU4NTg0MTBiYWE2OGM2MmIwYjMzNmM2ZCIsInN0YWZmX2lkIjo1fQ.28ZmAaAUHDtFWnxoBfWCjVbXMqIeZprIvG4lFxYoyRc",
+  "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ0MDgxMjcyLCJpYXQiOjE3NDM3MzU2NzIsImp0aSI6ImMwMGIzYjY5NTNmMTRhMTBiYWI5MDBiMDA2MDA5OWI1Iiwic3RhZmZfaWQiOjV9.N9CY1ezPZdzo0CThIn8uhqIUhYcedGqVCDcuggd3Pzc",
+  "user": {
+    "staff_id": 5,
+    "address": {
+      "address_id": 1,
+      "address": "47 MySakila Drive",
+      "address2": null,
+      "district": "Alberta",
+      "postal_code": "",
+      "phone": "",
+      "location": "b'\\x00\\x00\\x00\\x00\\x01\\x01\\x00\\x00\\x00>\\n2]c4\\\\\\xc0v\\x1f\\xdb\\x8d\\x99\\xd9H@'",
+      "last_update": "2014-09-25T22:30:27Z",
+      "city": 300
+    },
+    "store": {
+      "store_id": 1,
+      "last_update": "2006-02-15T04:57:12Z",
+      "manager_staff": 1,
+      "address": 1
+    },
+    "role": {
+      "id": 1,
+      "role_name": "admin"
+    },
+    "last_login": null,
+    "first_name": "Juan",
+    "last_name": "Pérez",
+    "picture": null,
+    "email": "reyedvicto@gmail.com",
+    "active": 1,
+    "username": "vicky18uu03",
+    "last_update": "2025-04-04T02:28:37Z"
+  }
+};
+
+// Convertir el objeto en una cadena JSON
+const userDataJSON = JSON.stringify(userData);
+
+// Almacenar la cadena JSON en LocalStorage
+localStorage.setItem('user_data', userDataJSON); */
+</script>
+
+</body>
+</html>
