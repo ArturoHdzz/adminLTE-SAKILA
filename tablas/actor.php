@@ -166,7 +166,7 @@ $actors = getActors();
             <div class="container-fluid">
                 <?php echo $message; ?>
                 
-                <div class="card">
+                <div class="card noGuest" >
                     <div class="card-header">
                         <h3 class="card-title"><?php echo $actor_edit ? 'Editar Actor' : 'Nuevo Actor'; ?></h3>
                     </div>
@@ -220,7 +220,7 @@ $actors = getActors();
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Última Actualización</th>
-                                <th>Acciones</th>
+                                <th class="noGuest">Acciones</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -231,7 +231,7 @@ $actors = getActors();
                                         <td><?php echo $actor['first_name']; ?></td>
                                         <td><?php echo $actor['last_name']; ?></td>
                                         <td><?php echo date('d/m/Y H:i:s', strtotime($actor['last_update'])); ?></td>
-                                        <td>
+                                        <td  class="noGuest">
                                             <a href="?edit=<?php echo $actor['actor_id']; ?>" class="btn btn-sm btn-info">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
@@ -296,3 +296,4 @@ $actors = getActors();
 </script>
 </body>
 </html>
+

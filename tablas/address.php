@@ -184,7 +184,7 @@ $addresses = getAddresses();
                 <?php echo $message; ?>
 
                 <!-- Formulario de Dirección -->
-                <div class="card">
+                <div class="card noGuest" >
                     <div class="card-header">
                         <h3 class="card-title"><?php echo $address_edit ? 'Editar Dirección' : 'Nueva Dirección'; ?></h3>
                     </div>
@@ -260,7 +260,7 @@ $addresses = getAddresses();
                                     <th>Distrito</th>
                                     <th>Teléfono</th>
                                     <th>Última Actualización</th>
-                                    <th>Acciones</th>
+                                    <th class="noGuest">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -272,7 +272,7 @@ $addresses = getAddresses();
                                             <td><?php echo $addr['district']; ?></td>
                                             <td><?php echo $addr['phone']; ?></td>
                                             <td><?php echo date('d/m/Y H:i:s', strtotime($addr['last_update'])); ?></td>
-                                            <td>
+                                            <td class="noGuest">
                                                 <a href="?edit=<?php echo $addr['address_id']; ?>" class="btn btn-sm btn-info">
                                                     <i class="fas fa-edit"></i> Editar
                                                 </a>

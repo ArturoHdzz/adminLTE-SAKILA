@@ -236,7 +236,7 @@ $staffs = getStaffs();
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-body">
                         <form method="post" action="">
                             <?php if(isset($staff_edit) && $staff_edit): ?>
@@ -329,7 +329,7 @@ $staffs = getStaffs();
                                             <th>Última Actualización</th>
                                             <th>Dirección ID</th>
                                             <th>Tienda ID</th>
-                                            <th>Acciones</th>
+                                            <th class="noGuest">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -349,7 +349,7 @@ $staffs = getStaffs();
                                                 <td><?php echo isset($staff['last_update']) ? date('d/m/Y H:i:s', strtotime($staff['last_update'])) : ''; ?></td>
                                                 <td><?php echo $staff['address'] ?? ''; ?></td>
                                                 <td><?php echo $staff['store'] ?? ''; ?></td>
-                                                <td>
+                                                <td class="noGuest">
                                                     <a href="?edit=<?php echo $staff['staff_id'] ?? ''; ?>" class="btn btn-info btn-sm">
                                                         <i class="fas fa-edit"></i> Editar
                                                     </a>

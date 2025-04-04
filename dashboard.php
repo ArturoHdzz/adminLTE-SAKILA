@@ -233,3 +233,6 @@
 <script src="dist/js/adminlte.min.js" defer></script>
 </body>
 </html>
+
+<script>
+</script>

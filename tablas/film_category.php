@@ -186,7 +186,7 @@ $filmcategories = getFilmCategories();
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-header">
                         <h3 class="card-title"><?php echo isset($filmcategory_edit) ? 'Editar' : 'Agregar'; ?> Categoría de Película</h3>
                     </div>
@@ -228,7 +228,7 @@ $filmcategories = getFilmCategories();
                                         <th>Película ID</th>
                                         <th>Categoría ID</th>
                                         <th>Última Actualización</th>
-                                        <th>Acciones</th>
+                                        <th class="noGuest">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -238,7 +238,7 @@ $filmcategories = getFilmCategories();
                                             <td><?php echo $filmcategory['film'] ?? ''; ?></td>
                                             <td><?php echo $filmcategory['category'] ?? ''; ?></td>
                                             <td><?php echo isset($filmcategory['last_update']) ? date('d/m/Y H:i:s', strtotime($filmcategory['last_update'])) : ''; ?></td>
-                                            <td>
+                                            <td class="noGuest">
                                                 <a href="?edit=<?php echo $filmcategory['id'] ?? ''; ?>" class="btn btn-info btn-sm">
                                                     <i class="fas fa-edit"></i> Editar
                                                 </a>

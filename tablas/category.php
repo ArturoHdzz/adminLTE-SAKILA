@@ -133,24 +133,25 @@ $categories = getCategories();
         <section class="content-header">
             <h1>Gestión de Categorías</h1>
         </section>
-        <section class="content">
+        <section class="content" >
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <form method="post" action="">
+                <form class="noGuest"
+                  method="post" action="">
                     <input type="hidden" name="category_id" value="<?php echo $category_edit['category_id'] ?? ''; ?>">
                     <label>Nombre:</label>
                     <input type="text" name="name" class="form-control" required value="<?php echo $category_edit['name'] ?? ''; ?>">
                     <button type="submit" name="save" class="btn btn-primary mb-3 mt-3">Guardar</button>
                 </form>
                 <table class="table table-bordered table-striped">
-                    <thead><tr><th>ID</th><th>Nombre</th><th>Última Actualización</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Nombre</th><th>Última Actualización</th><th class="noGuest">Acciones</th></tr></thead>
                     <tbody>
                         <?php foreach ($categories as $category): ?>
                             <tr>
                                 <td><?php echo $category['category_id']; ?></td>
                                 <td><?php echo $category['name']; ?></td>
                                 <td><?php echo date('d/m/Y H:i:s', strtotime($category['last_update'])); ?></td>
-                                <td>
+                                <td id="buttons" class="noGuest">
                                     <a href="?edit=<?php echo $category['category_id']; ?>" class="btn btn-info btn-sm">Editar</a>
                                     <form method="post" style="display:inline;">
                                         <input type="hidden" name="category_id" value="<?php echo $category['category_id']; ?>">
@@ -164,7 +165,6 @@ $categories = getCategories();
             </div>
         </section>
     </div>
-    <?php include '../_footer.php'; ?>
 </div>
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
@@ -173,4 +173,6 @@ $categories = getCategories();
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
 </body>
+
 </html>
+

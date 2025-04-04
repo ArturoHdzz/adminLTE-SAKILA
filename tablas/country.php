@@ -136,21 +136,21 @@ $countries = getCountries();
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <form method="post" action="">
+                <form method="post" action="" class="noGuest">
                     <input type="hidden" name="country_id" value="<?php echo $country_edit['country_id'] ?? ''; ?>">
                     <label>País:</label>
                     <input type="text" name="country" class="form-control" required value="<?php echo $country_edit['country'] ?? ''; ?>">
                     <button type="submit" name="save" class="btn btn-primary mb-3 mt-3">Guardar</button>
                 </form>
                 <table class="table table-bordered table-striped">
-                    <thead><tr><th>ID</th><th>País</th><th>Última Actualización</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>ID</th><th>País</th><th>Última Actualización</th><th class="noGuest">Acciones</th></tr></thead>
                     <tbody>
                         <?php foreach ($countries as $country): ?>
                             <tr>
                                 <td><?php echo $country['country_id']; ?></td>
                                 <td><?php echo $country['country']; ?></td>
                                 <td><?php echo date('d/m/Y H:i:s', strtotime($country['last_update'])); ?></td>
-                                <td>
+                                <td class="noGuest">
                                     <a href="?edit=<?php echo $country['country_id']; ?>" class="btn btn-info btn-sm">Editar</a>
                                     <form method="post" style="display:inline;">
                                         <input type="hidden" name="country_id" value="<?php echo $country['country_id']; ?>">

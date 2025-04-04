@@ -188,7 +188,7 @@ $filmtexts = getFilmTexts();
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-body">
                         <form method="post" action="">
                             <?php if(isset($filmtext_edit) && $filmtext_edit): ?>
@@ -233,7 +233,7 @@ $filmtexts = getFilmTexts();
                                         <th>ID Película</th>
                                         <th>Título</th>
                                         <th>Descripción</th>
-                                        <th>Acciones</th>
+                                        <th class="noGuest">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -242,7 +242,7 @@ $filmtexts = getFilmTexts();
                                             <td><?php echo $filmtext['film_id'] ?? ''; ?></td>
                                             <td><?php echo $filmtext['title'] ?? ''; ?></td>
                                             <td><?php echo $filmtext['description'] ?? ''; ?></td>
-                                            <td>
+                                            <td class="noGuest">
                                                 <a href="?edit=<?php echo $filmtext['film_id'] ?? ''; ?>" class="btn btn-info btn-sm">
                                                     <i class="fas fa-edit"></i> Editar
                                                 </a>

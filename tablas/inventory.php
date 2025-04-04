@@ -186,7 +186,7 @@ $inventories = getInventories();
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-body">
                         <form method="post" action="">
                             <?php if(isset($inventory_edit) && $inventory_edit): ?>
@@ -225,7 +225,7 @@ $inventories = getInventories();
                                         <th>Película ID</th>
                                         <th>Tienda ID</th>
                                         <th>Última Actualización</th>
-                                        <th>Acciones</th>
+                                        <th class="noGuest">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -235,7 +235,7 @@ $inventories = getInventories();
                                             <td><?php echo $inventory['film'] ?? ''; ?></td>
                                             <td><?php echo $inventory['store'] ?? ''; ?></td>
                                             <td><?php echo isset($inventory['last_update']) ? date('d/m/Y H:i:s', strtotime($inventory['last_update'])) : ''; ?></td>
-                                            <td>
+                                            <td class="noGuest">
                                                 <a href="?edit=<?php echo $inventory['inventory_id'] ?? ''; ?>" class="btn btn-info btn-sm">
                                                     <i class="fas fa-edit"></i> Editar
                                                 </a>

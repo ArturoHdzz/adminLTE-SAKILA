@@ -220,7 +220,7 @@ $rentals = getRentals();
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-body">
                         <form method="post" action="">
                             <?php if(isset($rental_edit) && $rental_edit): ?>
@@ -291,7 +291,7 @@ $rentals = getRentals();
                                             <th>ID Inventario</th>
                                             <th>ID Cliente</th>
                                             <th>ID Personal</th>
-                                            <th>Acciones</th>
+                                            <th class="noGuest">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -304,7 +304,7 @@ $rentals = getRentals();
                                                 <td><?php echo $rental['inventory'] ?? ''; ?></td>
                                                 <td><?php echo $rental['customer'] ?? ''; ?></td>
                                                 <td><?php echo $rental['staff'] ?? ''; ?></td>
-                                                <td>
+                                                <td class="noGuest">
                                                     <a href="?edit=<?php echo $rental['rental_id'] ?? ''; ?>" class="btn btn-info btn-sm">
                                                         <i class="fas fa-edit"></i> Editar
                                                     </a>

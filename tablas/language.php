@@ -183,7 +183,7 @@ $languages = getLanguages();
         <section class="content">
             <div class="container-fluid">
                 <?php echo $message; ?>
-                <div class="card card-primary">
+                <div class="card card-primary noGuest">
                     <div class="card-body">
                         <form method="post" action="">
                             <?php if(isset($language_edit) && $language_edit): ?>
@@ -217,7 +217,7 @@ $languages = getLanguages();
                                         <th>ID</th>
                                         <th>Nombre</th>
                                         <th>Última Actualización</th>
-                                        <th>Acciones</th>
+                                        <th class="noGuest">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -226,7 +226,7 @@ $languages = getLanguages();
                                             <td><?php echo $language['language_id'] ?? ''; ?></td>
                                             <td><?php echo $language['name'] ?? ''; ?></td>
                                             <td><?php echo isset($language['last_update']) ? date('d/m/Y H:i:s', strtotime($language['last_update'])) : ''; ?></td>
-                                            <td>
+                                            <td class="noGuest">
                                                 <a href="?edit=<?php echo $language['language_id'] ?? ''; ?>" class="btn btn-info btn-sm">
                                                     <i class="fas fa-edit"></i> Editar
                                                 </a>
