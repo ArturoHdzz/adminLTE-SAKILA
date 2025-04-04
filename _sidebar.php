@@ -142,8 +142,6 @@
     </div>
     <!-- /.sidebar -->
   </aside>
-
-<script src="utils/rolControl.js"></script>
 <script>
 
   function useComponent(roles) {

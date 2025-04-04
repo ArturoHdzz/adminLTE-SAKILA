@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -235,4 +234,16 @@
 </html>
 
 <script>
+</script>
+
+
+<script>
+function checkLocalStorageAndRedirect() {
+    const userData = localStorage.getItem('user_data')  
+    if (!userData) {
+        window.location.href = "/login.php"
+    }
+}
+
+document.addEventListener("DOMContentLoaded", checkLocalStorageAndRedirect);
 </script>

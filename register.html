@@ -77,14 +77,47 @@
             </div>
           </div>
         </div>
+
+        <!-- Campo para Dirección (número) -->
         <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Dirección" name="address" required>
+          <input type="number" class="form-control" placeholder="Número de Dirección" name="address" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-home"></span>
             </div>
           </div>
         </div>
+
+        <!-- Campo para seleccionar el Rol -->
+        <div class="input-group mb-3">
+          <select class="form-control" name="role" required>
+            <option value="">Seleccionar rol</option>
+            <option value="1">Administrador</option>
+            <option value="3">Invitado</option>
+            <option value="2">Cliente</option>
+          </select>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user-tag"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campo para seleccionar la Tienda (Store) -->
+        <div class="input-group mb-3">
+          <select class="form-control" name="store" required>
+            <option value="">Seleccionar tienda</option>
+            <option value="1">Tienda 1</option>
+            <option value="2">Tienda 2</option>
+            <option value="3">Tienda 3</option>
+          </select>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-store"></span>
+            </div>
+          </div>
+        </div>
+
         <div class="row">
           <div class="col-8">
             <div class="icheck-primary">
@@ -118,7 +151,7 @@
 
 <script>
   document.getElementById('registerForm').addEventListener('submit', function(event) {
-    event.preventDefault();  // Evitar el envío por defecto del formulario
+    event.preventDefault(); 
 
     const firstName = document.querySelector('input[name="first_name"]').value;
     const lastName = document.querySelector('input[name="last_name"]').value;
@@ -126,7 +159,9 @@
     const username = document.querySelector('input[name="username"]').value;
     const password = document.querySelector('input[name="password"]').value;
     const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
-    const address = document.querySelector('input[name="address"]').value;
+    const address = parseInt(document.querySelector('input[name="address"]').value); // Convertir a int
+    const role = parseInt(document.querySelector('select[name="role"]').value); // Convertir a int
+    const store = parseInt(document.querySelector('select[name="store"]').value); // Convertir a int
 
     if (password !== confirmPassword) {
       alert('Las contraseñas no coinciden.');
@@ -139,10 +174,12 @@
       email: email,
       username: username,
       password: password,
-      address: address
+      address: address,
+      role: role,
+      store: store
     };
 
-    fetch('http://64.23.250.130/api/register', {
+    fetch('http://64.23.250.130/api/register/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
