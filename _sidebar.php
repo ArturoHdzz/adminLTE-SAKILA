@@ -13,7 +13,9 @@
           <img src="../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Admin Sakila</a>
+          <a href="#" class="d-block">
+            <span id="sidebarUsername">Admin Sakila</span>
+          </a>
         </div>
       </div>
 
@@ -191,6 +193,15 @@
 
 </script>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const userData = JSON.parse(localStorage.getItem('user_data'));
+    if (userData && userData.user) {
+      const fullName = `${userData.user.first_name} ${userData.user.last_name} (${userData.user.role.role_name})`;
+      document.getElementById('sidebarUsername').textContent = fullName;
+    }
+  });
+</script>
 <script>
 function checkLocalStorageAndRedirect() {
     const userData = localStorage.getItem('user_data')  
