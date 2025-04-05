@@ -85,7 +85,7 @@
                       </a>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="noClient">
                     <td>Customer</td>
                     <td>Información de clientes</td>
                     <td>
@@ -139,7 +139,7 @@
                       </a>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="noClient">
                     <td>Language</td>
                     <td>Idiomas de películas</td>
                     <td>
@@ -148,7 +148,7 @@
                       </a>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="noClient">
                     <td>Payment</td>
                     <td>Registro de pagos</td>
                     <td>
@@ -157,7 +157,7 @@
                       </a>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="noClient">
                     <td>Rental</td>
                     <td>Registro de alquileres</td>
                     <td>
@@ -166,7 +166,7 @@
                       </a>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="noClient">
                     <td>Staff</td>
                     <td>Información de empleados</td>
                     <td>
@@ -175,7 +175,7 @@
                       </a>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="noClient">
                     <td>Store</td>
                     <td>Información de tiendas</td>
                     <td>
