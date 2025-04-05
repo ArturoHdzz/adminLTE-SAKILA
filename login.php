@@ -49,21 +49,31 @@
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block" id="submitButton">
-              Entrar
-              <span id="submitSpinner" class="spinner-border text-light" style="display:none;"></span>
-            </button>
-          </div>
-        </div>
-        <!-- Nuevo botón para otra API -->
-        <div class="col-4 mt-2">
-          <button type="button" id="resendButton" class="btn btn-success btn-block">
-            Reenviar código
-            <span id="resendSpinner" class="spinner-border text-light" style="display:none;"></span>
-          </button>
-        </div>
+<div class="row text-center justify-content-center">
+  <!-- Botón de Entrar -->
+  <div class="col-md-10 mb-2">
+    <button type="submit" class="btn btn-primary btn-block" id="submitButton">
+      Entrar
+      <span id="submitSpinner" class="spinner-border spinner-border-sm text-light ms-2" style="display:none;"></span>
+    </button>
+  </div>
+
+  <!-- Botón de Reenviar código -->
+  <div class="col-md-5 mb-2">
+    <button type="button" id="resendButton" class="btn btn-warning btn-block">
+      Reenviar código
+      <span id="resendSpinner" class="spinner-border spinner-border-sm text-light ms-2" style="display:none;"></span>
+    </button>
+  </div>
+
+  <!-- Botón de Recuperar contraseña -->
+  <div class="col-md-5 mb-2">
+    <button type="button" id="recoveryButton" class="btn btn-secondary btn-block">
+      Recuperar contraseña
+      <span id="recoverySpinner" class="spinner-border spinner-border-sm text-light ms-2" style="display:none;"></span>
+    </button>
+  </div>
+</div>
       </form>
     </div>
   </div>
@@ -103,7 +113,7 @@
       password: document.querySelector('input[name="password"]').value
     };
 
-    showLoading('submitButton', 'submitSpinner');  // Mostrar el spinner
+    showLoading('submitButton', 'submitSpinner'); 
 
     fetch('http://64.23.250.130/api/verify-otp/', {
       method: 'POST',
@@ -119,12 +129,10 @@
       return response.json();
     })
     .then(data => {
-      hideLoading('submitButton', 'submitSpinner');  // Ocultar el spinner
+      hideLoading('submitButton', 'submitSpinner'); 
       if (data.user && data.access && data.refresh) {
         localStorage.setItem('user_data', JSON.stringify(data));
-
         document.cookie = `access_token=${data.access}; path=/; SameSite=Lax`;
-
         window.location.href = 'dashboard.php';
       } else {
         alert('Error en la solicitud: ' + (data.error || 'No se pudo realizar la acción'));
@@ -135,6 +143,44 @@
       alert('Hubo un error en la solicitud: ' + error.message);
     });
   });
+
+
+  document.getElementById('recoveryButton').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    const additionalData = {
+      email: document.querySelector('input[name="email"]').value,
+    };
+
+    showLoading('recoveryButton', 'recoverySpinner'); 
+
+    fetch('http://64.23.250.130/api/send-recovery-email/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(additionalData)
+    })
+    .then(response => response.json())
+    .then(data => {
+      hideLoading('recoveryButton', 'recoverySpinner');
+      console.log(data.message);
+
+      if (data.message) {
+        alert('Se envio un correo de recuperación a tu correo electrónico.');
+      } else {
+        alert('Error en la solicitud: ' + (data.error || 'No se pudo realizar la acción'));
+      }
+    })
+    .catch(error => {
+      hideLoading('recoveryButton', 'recoverySpinner');
+      alert('Hubo un error en la solicitud: ' + error.message);
+    });
+  });
+
+
+
+
 
   document.getElementById('resendButton').addEventListener('click', function(event) {
     event.preventDefault();
